@@ -138,7 +138,7 @@ export default function AdvancedKDS() {
                       {order.items.map((item, idx) => (
                         <div key={idx} className={styles.item}>
                           <span>{item.name}</span>
-                          <span style={{ fontWeight: 'bold' }}>{item.quantity || (item as any).qty}</span>
+                          <span style={{ fontWeight: 'bold' }}>{(item as any).quantity || (item as any).qty}</span>
                         </div>
                       ))}
                     </div>
