@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  height: 100vh;
+}
+.sidebar {
+  width: 250px;
+  background-color: var(--surface-admin);
+  border-right: 1px solid #E5E7EB;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.main {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+.navItem {
+  color: var(--text-secondary-admin);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.navItem:hover {
+  background-color: #F3F4F6;
+  color: var(--text-primary-admin);
+}
