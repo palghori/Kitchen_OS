@@ -30,7 +30,7 @@ export declare class OrdersService {
         source: import("@prisma/client").$Enums.OrderSource;
         externalId: string | null;
         total: number;
-        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         status: import("@prisma/client").$Enums.OrderStatus;
         subtotal: number;
         taxAmount: number;
@@ -62,7 +62,7 @@ export declare class OrdersService {
         source: import("@prisma/client").$Enums.OrderSource;
         externalId: string | null;
         total: number;
-        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         status: import("@prisma/client").$Enums.OrderStatus;
         subtotal: number;
         taxAmount: number;
@@ -94,7 +94,7 @@ export declare class OrdersService {
         source: import("@prisma/client").$Enums.OrderSource;
         externalId: string | null;
         total: number;
-        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         status: import("@prisma/client").$Enums.OrderStatus;
         subtotal: number;
         taxAmount: number;
