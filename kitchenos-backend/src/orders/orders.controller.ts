@@ -24,7 +24,7 @@ export class OrdersController {
            createDto.externalId = payload.order_id;
            createDto.total = payload.order_total;
            createDto.metadata = payload;
-           createDto.items = payload.cart.map(item => ({
+           createDto.items = payload.cart.map((item: any) => ({
              name: item.item_name,
              quantity: item.qty,
              price: item.price

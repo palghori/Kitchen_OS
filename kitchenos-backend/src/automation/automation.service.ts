@@ -40,7 +40,6 @@ export class AutomationService {
               title: `Automation: ${rule.name}`,
               message: action.message,
               organizationId: organizationId,
-              userId: null,
               channels: ['EMAIL', 'PUSH']
             });
           }

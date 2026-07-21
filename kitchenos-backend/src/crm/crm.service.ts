@@ -12,7 +12,7 @@ export class CrmService {
 
     if (!order) throw new Error('Order not found');
 
-    const orderAmount = order.totalAmount;
+    const orderAmount = order.total;
     const pointsEarned = Math.floor(orderAmount);
 
     await this.prisma.customer.update({

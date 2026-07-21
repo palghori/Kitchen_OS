@@ -11,13 +11,13 @@ export class InvitationsController {
 
   @Roles('ADMIN', 'OWNER')
   @Post()
-  async createInvitation(@Request() req, @Body() body: { email: string, role: string }) {
+  async createInvitation(@Request() req: any, @Body() body: { email: string, role: string }) {
     return this.invitationsService.inviteUser(body.email, body.role, req.user.organizationId);
   }
 
   @Roles('ADMIN', 'OWNER')
   @Get()
-  async getInvitations(@Request() req) {
+  async getInvitations(@Request() req: any) {
     return this.invitationsService.getInvitations(req.user.organizationId);
   }
 }

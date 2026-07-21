@@ -68,8 +68,7 @@ export class ProcurementService {
           data: {
             ingredientId: rItem.ingredientId,
             supplierId: po.supplierId,
-            quantityReceived: netUsable,
-            quantityRemaining: netUsable,
+            quantity: netUsable,
             unitCost: poItem.unitCost,
             expiryDate: rItem.batchExpiry ? new Date(rItem.batchExpiry) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
           }
@@ -113,15 +112,15 @@ export class ProcurementService {
     const ingredients = await this.prisma.ingredient.findMany({
       where: { organizationId },
       include: {
-        batches: { where: { quantityRemaining: { gt: 0 } } },
+        batches: { where: { quantity: { gt: 0 } } },
         priceHistory: { orderBy: { date: 'desc' }, take: 1, include: { supplier: true } }
       }
     });
 
     const recommendations = [];
 
-    for (const ing of ingredients) {
-      const totalStock = ing.batches.reduce((sum, b) => sum + b.quantityRemaining, 0);
+    for (const ing of ingredients as any[]) {
+      const totalStock = ing.batches.reduce((sum: number, b: any) => sum + b.quantity, 0);
       
       if (totalStock <= ing.reorderPoint) {
         const lastPrice = ing.priceHistory[0];

@@ -20,8 +20,8 @@ export class AuditInterceptor implements NestInterceptor {
                 userId: user.id || 'system',
                 organizationId: user.organizationId,
                 action: `${method} ${url}`,
-                entity: url.split('/')[1] || 'unknown',
-                entityId: 'system',
+                resource: url.split('/')[1] || 'unknown',
+                resourceId: 'system',
                 details: 'Action performed successfully'
               }
             });
