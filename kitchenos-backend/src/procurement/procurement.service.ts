@@ -66,6 +66,8 @@ export class ProcurementService {
       if (netUsable > 0) {
         const batch = await this.prisma.inventoryBatch.create({
           data: {
+            batchNumber: `BATCH-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            warehouseId,
             ingredientId: rItem.ingredientId,
             supplierId: po.supplierId,
             quantity: netUsable,
