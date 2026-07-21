@@ -1,0 +1,106 @@
+import { OrdersService } from './orders.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+export declare class OrdersController {
+    private readonly ordersService;
+    constructor(ordersService: OrdersService);
+    createOrder(createDto: CreateOrderDto): Promise<{
+        items: {
+            id: string;
+            name: string;
+            quantity: number;
+            price: number;
+            orderId: string;
+        }[];
+        brand: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            kitchenId: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        kitchenId: string;
+        brandId: string;
+        source: import("@prisma/client").$Enums.OrderSource;
+        externalId: string | null;
+        total: number;
+        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        status: import("@prisma/client").$Enums.OrderStatus;
+        subtotal: number;
+        taxAmount: number;
+        prepTimeSeconds: number | null;
+        customerId: string | null;
+        preparedById: string | null;
+    }>;
+    handleSwiggyWebhook(payload: any): Promise<{
+        status: string;
+    }>;
+    updateStatus(id: string, updateDto: UpdateOrderStatusDto): Promise<{
+        items: {
+            id: string;
+            name: string;
+            quantity: number;
+            price: number;
+            orderId: string;
+        }[];
+        brand: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            kitchenId: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        kitchenId: string;
+        brandId: string;
+        source: import("@prisma/client").$Enums.OrderSource;
+        externalId: string | null;
+        total: number;
+        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        status: import("@prisma/client").$Enums.OrderStatus;
+        subtotal: number;
+        taxAmount: number;
+        prepTimeSeconds: number | null;
+        customerId: string | null;
+        preparedById: string | null;
+    }>;
+    getActiveOrders(kitchenId: string): Promise<({
+        items: {
+            id: string;
+            name: string;
+            quantity: number;
+            price: number;
+            orderId: string;
+        }[];
+        brand: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            kitchenId: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        kitchenId: string;
+        brandId: string;
+        source: import("@prisma/client").$Enums.OrderSource;
+        externalId: string | null;
+        total: number;
+        metadata: import("@prisma/client/runtime/client").JsonValue | null;
+        status: import("@prisma/client").$Enums.OrderStatus;
+        subtotal: number;
+        taxAmount: number;
+        prepTimeSeconds: number | null;
+        customerId: string | null;
+        preparedById: string | null;
+    })[]>;
+}
