@@ -68,6 +68,18 @@ export default function AdvancedKDS() {
     }
   };
 
+  const simulateOrder = () => {
+    playDing();
+    setOrders(prev => [...prev, {
+      id: `#sim${Math.floor(Math.random() * 1000)}`,
+      brand: 'KITCHEN OS TEST',
+      brandColor: '#10B981',
+      status: 'PREPARING',
+      items: [{ name: 'Test Burger', qty: 1 }],
+      createdAt: Date.now()
+    }]);
+  };
+
   const getElapsedTime = (createdAt: number) => {
     if (now === null) return '0m 00s';
     const diff = Math.floor((now - createdAt) / 1000);
@@ -104,6 +116,7 @@ export default function AdvancedKDS() {
           <span style={{ color: '#94A3B8' }}>{orders.length} Active</span>
         </div>
         <div style={{ display: 'flex', gap: '16px' }}>
+          <button onClick={simulateOrder} style={{ padding: '8px 12px', background: '#FEF3C7', color: '#92400E', border: '1px solid #F59E0B', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Simulate Order</button>
           <a href="/kds/dashboard" style={{ color: 'var(--accent-primary)', textDecoration: 'none' }}>Chef Dashboard ↗</a>
           <span style={{ color: 'var(--status-success)' }}>● ONLINE</span>
         </div>

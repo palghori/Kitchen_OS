@@ -55,6 +55,8 @@ export default function MenuBuilder() {
             }))
           }));
           setCategories(formattedCategories);
+        } else {
+          setCategories(mockMenu);
         }
       } catch (err) {
         console.error('Failed to fetch menu:', err);
