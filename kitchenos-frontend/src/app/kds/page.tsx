@@ -10,16 +10,17 @@ export default function AdvancedKDS() {
     { id: '#mock1', brand: 'SPICY TACO CO.', brandColor: '#F97316', status: 'PREPARING', items: [{ name: 'Chicken Tacos', qty: 3 }], createdAt: Date.now() - 1000 * 60 * 12 }, // 12 mins ago (delayed)
     { id: '#mock2', brand: 'BURGER HAVEN', brandColor: '#EF4444', status: 'COOKING', items: [{ name: 'Cheeseburger', qty: 2 }], createdAt: Date.now() - 1000 * 60 * 3 }, // 3 mins ago
   ]);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState<number | null>(null);
   
   // Audio ref for sounds
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     document.body.classList.add('kds-theme');
+    setNow(Date.now());
     const timerInterval = setInterval(() => setNow(Date.now()), 1000);
     
-    const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'https://kitchen-os-9wgp.onrender.com';
     const socket = io(socketUrl);
     socket.on('connect', () => console.log('Connected to Order Management Engine'));
 
@@ -68,6 +69,7 @@ export default function AdvancedKDS() {
   };
 
   const getElapsedTime = (createdAt: number) => {
+    if (now === null) return '0m 00s';
     const diff = Math.floor((now - createdAt) / 1000);
     const m = Math.floor(diff / 60);
     const s = diff % 60;
@@ -118,7 +120,7 @@ export default function AdvancedKDS() {
             <div className={styles.columnHeader}>{col}</div>
             <div className={styles.ticketList}>
               {orders.filter(o => o.status === col).sort((a,b) => a.createdAt - b.createdAt).map(order => {
-                const isDelayed = (now - order.createdAt) > 10 * 60 * 1000; // 10 mins threshold
+                const isDelayed = now !== null && (now - order.createdAt) > 10 * 60 * 1000; // 10 mins threshold
                 return (
                   <div 
                     key={order.id} 

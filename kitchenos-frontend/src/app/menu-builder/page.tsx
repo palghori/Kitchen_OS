@@ -24,14 +24,16 @@ const mockMenu = [
 ];
 
 export default function MenuBuilder() {
-  const [categories, setCategories] = useState<any[]>(mockMenu);
-  const [expandedItem, setExpandedItem] = useState<string | null>('item-1');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kitchen-os-9wgp.onrender.com';
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/menu?organizationId=default-org-id`;
+        const url = `${API_URL}/menu?organizationId=default-org-id`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('API failed');
         const data = await res.json();
@@ -55,13 +57,56 @@ export default function MenuBuilder() {
           setCategories(formattedCategories);
         }
       } catch (err) {
-        console.error('Failed to fetch menu from API, using mock data:', err);
+        console.error('Failed to fetch menu:', err);
+        setCategories(mockMenu);
       } finally {
         setLoading(false);
       }
     };
     fetchMenu();
   }, []);
+
+  const handleAddCategory = async () => {
+    const name = prompt('Enter category name:');
+    if (!name) return;
+    try {
+      const res = await fetch(`${API_URL}/menu/category`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ organizationId: 'default-org-id', name })
+      });
+      if (res.ok) {
+        const newCat = await res.json();
+        setCategories([...categories, { id: newCat.id, name: newCat.name, items: [] }]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleAddItem = async (categoryId: string) => {
+    const name = prompt('Enter item name:');
+    if (!name) return;
+    const priceStr = prompt('Enter base price:');
+    const basePrice = parseFloat(priceStr || '0');
+    try {
+      const res = await fetch(`${API_URL}/menu/item`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categoryId, data: { name, basePrice, variants: [], modifierGroups: [] } })
+      });
+      if (res.ok) {
+        const newItem = await res.json();
+        setCategories(categories.map(cat => 
+          cat.id === categoryId 
+            ? { ...cat, items: [...cat.items, { id: newItem.id, name: newItem.name, basePrice: newItem.basePrice, variants: [], modifiers: [] }] } 
+            : cat
+        ));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (loading) return <div style={{ padding: '32px' }}>Loading menu...</div>;
 
@@ -72,7 +117,7 @@ export default function MenuBuilder() {
           <h1 style={{ fontSize: '24px' }}>Menu Builder</h1>
           <p style={{ color: '#697386' }}>Design categories, variants, and modifier trees</p>
         </div>
-        <button style={{ padding: '10px 16px', background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>+ Add Category</button>
+        <button onClick={handleAddCategory} style={{ padding: '10px 16px', background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>+ Add Category</button>
       </header>
 
       <div style={{ display: 'flex', gap: '24px' }}>
@@ -81,7 +126,7 @@ export default function MenuBuilder() {
             <div key={cat.id} style={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden' }}>
               <div style={{ padding: '16px 24px', background: '#F9FAFB', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{cat.name}</h2>
-                <button style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 500 }}>+ Add Item</button>
+                <button onClick={() => handleAddItem(cat.id)} style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 500 }}>+ Add Item</button>
               </div>
               
               <div>
