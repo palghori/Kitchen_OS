@@ -19,7 +19,8 @@ export default function AdvancedKDS() {
     document.body.classList.add('kds-theme');
     const timerInterval = setInterval(() => setNow(Date.now()), 1000);
     
-    const socket = io('http://localhost:3001');
+    const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const socket = io(socketUrl);
     socket.on('connect', () => console.log('Connected to Order Management Engine'));
 
     socket.on('order_created', (newOrder: any) => {

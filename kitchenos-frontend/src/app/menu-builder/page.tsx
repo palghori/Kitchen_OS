@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const mockMenu = [
   {
@@ -24,8 +24,46 @@ const mockMenu = [
 ];
 
 export default function MenuBuilder() {
-  const [categories, setCategories] = useState(mockMenu);
+  const [categories, setCategories] = useState<any[]>(mockMenu);
   const [expandedItem, setExpandedItem] = useState<string | null>('item-1');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/menu?organizationId=default-org-id`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API failed');
+        const data = await res.json();
+        
+        if (data && data.length > 0) {
+          const formattedCategories = data.map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            items: cat.items.map((item: any) => ({
+              id: item.id,
+              name: item.name,
+              basePrice: item.basePrice,
+              variants: item.variants || [],
+              modifiers: (item.modifierGroups || []).map((mg: any) => ({
+                group: mg.name,
+                required: mg.isRequired,
+                options: mg.modifiers || []
+              }))
+            }))
+          }));
+          setCategories(formattedCategories);
+        }
+      } catch (err) {
+        console.error('Failed to fetch menu from API, using mock data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMenu();
+  }, []);
+
+  if (loading) return <div style={{ padding: '32px' }}>Loading menu...</div>;
 
   return (
     <div style={{ padding: '32px', backgroundColor: '#F7F9FC', minHeight: '100vh', color: '#1A1F36' }}>
@@ -47,7 +85,7 @@ export default function MenuBuilder() {
               </div>
               
               <div>
-                {cat.items.map(item => (
+                {cat.items.map((item: any) => (
                   <div key={item.id} style={{ borderBottom: '1px solid #E5E7EB', padding: '16px 24px', cursor: 'pointer' }} onClick={() => setExpandedItem(item.id)}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontWeight: 500 }}>{item.name}</span>
@@ -58,7 +96,7 @@ export default function MenuBuilder() {
                       <div style={{ marginTop: '16px', paddingLeft: '24px', borderLeft: '2px solid var(--accent-primary)' }}>
                         <div style={{ marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '14px', color: '#697386', marginBottom: '8px', textTransform: 'uppercase' }}>Variants</h4>
-                          {item.variants.map((v, i) => (
+                          {item.variants.map((v: any, i: number) => (
                             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '14px' }}>
                               <span>{v.name}</span>
                               <span>${v.price.toFixed(2)}</span>
@@ -68,13 +106,13 @@ export default function MenuBuilder() {
 
                         <div>
                           <h4 style={{ fontSize: '14px', color: '#697386', marginBottom: '8px', textTransform: 'uppercase' }}>Modifiers</h4>
-                          {item.modifiers.map((mod, i) => (
+                          {item.modifiers.map((mod: any, i: number) => (
                             <div key={i} style={{ marginBottom: '12px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                 <span style={{ fontWeight: 500, fontSize: '14px' }}>{mod.group}</span>
                                 {mod.required && <span style={{ fontSize: '10px', background: '#FEF3C7', color: '#92400E', padding: '2px 6px', borderRadius: '4px' }}>REQUIRED</span>}
                               </div>
-                              {mod.options.map((opt, j) => (
+                              {mod.options.map((opt: any, j: number) => (
                                 <div key={j} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', fontSize: '14px', paddingLeft: '12px' }}>
                                   <span>{opt.name}</span>
                                   <span>+${opt.price.toFixed(2)}</span>
